@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM balenalib/armv7hf-alpine
 MAINTAINER Consul Team <consul@hashicorp.com>
 
 # This is the release of Consul to pull in.
@@ -15,13 +15,14 @@ RUN addgroup consul && \
 # Set up certificates, base tools, and Consul.
 RUN set -eux && \
     apk add --no-cache ca-certificates curl dumb-init gnupg libcap openssl su-exec iputils jq && \
-    gpg --keyserver pgp.mit.edu --recv-keys 91A6E7F85D05C65630BEF18951852D87348FFC4C && \
+    gpg --keyserver hkp://keys.gnupg.net --recv-keys 91A6E7F85D05C65630BEF18951852D87348FFC4C && \
     mkdir -p /tmp/build && \
     cd /tmp/build && \
     apkArch="$(apk --print-arch)" && \
     case "${apkArch}" in \
         aarch64) consulArch='arm64' ;; \
         armhf) consulArch='arm' ;; \
+        arm7) consulArch='arm' ;; \
         x86) consulArch='386' ;; \
         x86_64) consulArch='amd64' ;; \
         *) echo >&2 "error: unsupported architecture: ${apkArch} (see ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/)" && exit 1 ;; \
@@ -35,9 +36,10 @@ RUN set -eux && \
     cd /tmp && \
     rm -rf /tmp/build && \
     apk del gnupg openssl && \
-    rm -rf /root/.gnupg && \
+    rm -rf /root/.gnupg 
+
 # tiny smoke test to ensure the binary we downloaded runs
-    consul version
+RUN consul version
 
 # The /consul/data dir is used by Consul to store state. The agent will be started
 # with /consul/config as the configuration directory so you can add additional
