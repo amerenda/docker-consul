@@ -36,9 +36,10 @@ RUN set -eux && \
     cd /tmp && \
     rm -rf /tmp/build && \
     apk del gnupg openssl && \
-    rm -rf /root/.gnupg && \
+    rm -rf /root/.gnupg 
+
 # tiny smoke test to ensure the binary we downloaded runs
-    consul version
+RUN consul version
 
 # The /consul/data dir is used by Consul to store state. The agent will be started
 # with /consul/config as the configuration directory so you can add additional
