@@ -23,6 +23,7 @@ RUN set -eux && \
         aarch64) consulArch='arm64' ;; \
         armhf) consulArch='arm' ;; \
         arm7) consulArch='arm' ;; \
+        armv7) consulArch='arm' ;; \
         x86) consulArch='386' ;; \
         x86_64) consulArch='amd64' ;; \
         *) echo >&2 "error: unsupported architecture: ${apkArch} (see ${HASHICORP_RELEASES}/consul/${CONSUL_VERSION}/)" && exit 1 ;; \
